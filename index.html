@@ -536,7 +536,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,canvas:focus-visib
         <p><strong>1. Antes</strong> estudiábamos \(R(T,C)\) en un punto fijo: cuánto vale el rendimiento a 50 °C y 1,8 mol·L⁻¹, y cuán sensible es a cada variable.</p>
         <p><strong>2. Ahora \(T\) y \(C\) cambian con el tiempo.</strong> El reactor arranca a 40 °C con 2 mol·L⁻¹ de reactivo y el programa dice: subir 2 °C por minuto y dejar que la concentración caiga 0,04 mol·L⁻¹ por minuto:</p>
         \[T(t)=40+2t,\qquad C(t)=2-0{,}04\,t,\qquad t\ \text{en min}.\]
-        <p>El par \(\big(T(t),C(t)\big)\) es la <strong>trayectoria</strong> del proceso en el plano \(T\)–\(C\).</p>
+        <p>Son dos funciones de \(t\), una por variable. Vistas juntas, dibujan el camino del proceso en el plano \(T\)–\(C\): su <strong>trayectoria</strong>.</p>
         <p><strong>3. Por eso también cambia \(R\).</strong> En cada instante el rendimiento vale \(R\big(T(t),C(t)\big)\): una función <strong>compuesta</strong>, y de una sola variable, \(t\). Entra un instante, sale un número.</p>
         <div class="tbl"><table><thead><tr><th>Objeto</th><th>Entra → sale</th><th>Acá</th></tr></thead><tbody>
           <tr><td>Trayectoria</td><td>\(\mathbb{R}\to\mathbb{R}^2\)</td><td>\(t\mapsto(T(t),C(t))\)</td></tr>
@@ -573,7 +573,6 @@ button:focus-visible,input:focus-visible,select:focus-visible,canvas:focus-visib
         \[\frac{dR}{dt}=\underbrace{R_T}_{\text{sensibilidad a }T}\ \underbrace{\frac{dT}{dt}}_{\text{ritmo de }T}\ +\ \underbrace{R_C}_{\text{sensibilidad a }C}\ \underbrace{\frac{dC}{dt}}_{\text{ritmo de }C}\]
         <div class="idea">Cada término es una variable. El primer factor es cuán <strong>sensible</strong> es el rendimiento a esa variable; el segundo, cuán <strong>rápido</strong> se mueve esa variable. <strong>Sensibilidad por velocidad, sumado sobre cada variable.</strong></div>
         <div class="box err"><span class="bt">Dónde se evalúan las sensibilidades</span>En el punto donde está el proceso <em>en ese instante</em>: \(R_T\big(T(t),C(t)\big)\), no "en general". Derivar \(R\) y olvidarse de reemplazar el punto de la trayectoria es el error más frecuente de todo el tema.</div>
-        <div class="acc adv"><div class="acc-h" tabindex="0"><span class="acc-t">Opcional: la misma fórmula leída con el gradiente de la Unidad 3</span><span class="chev">▼</span></div><div class="acc-b">La suma es un producto escalar: \(\dfrac{dz}{dt}=\nabla f\big(\vec r(t)\big)\cdot\vec r\,'(t)\), la derivada de \(f\) <em>según el vector velocidad</em>, que en general no es unitario. Si el proceso recorre la misma trayectoria al doble de velocidad, \(\dfrac{dz}{dt}\) se duplica: el ritmo en el tiempo depende de hacia dónde <em>y</em> de cuán rápido; la derivada direccional, solo de hacia dónde.</div></div>
       </div>
     </div>
   </div>
@@ -588,6 +587,15 @@ button:focus-visible,input:focus-visible,select:focus-visible,canvas:focus-visib
 
   <div class="card">
     <h3>Ejemplos paso a paso</h3>
+    <p>Los ejemplos 1 y 2 calculan los dos aportes por separado. El ejemplo 3 hace el mismo cálculo con una notación más corta, que necesita un nombre antes.</p>
+    <div class="box def"><span class="bt">El vector trayectoria</span>Las dos funciones intermedias se pueden juntar en un solo objeto:
+      \[\vec r(t)=\big(T(t)\,;\ C(t)\big).\]
+      Para cada instante \(t\), \(\vec r(t)\) es el <strong>punto del plano \(T\)–\(C\) donde está el proceso</strong>: una temperatura y una concentración. No es una posición en el espacio; es el estado del reactor en ese instante. Cuando \(t\) avanza, ese punto se mueve y dibuja el camino del proceso: por eso se llama <strong>trayectoria</strong>. Su derivada,
+      \[\vec r\,'(t)=\big(T'(t)\,;\ C'(t)\big),\]
+      es el <strong>vector velocidad</strong>: cuán rápido cambia cada variable en ese instante y hacia dónde se mueve el proceso en el plano. Con él, la regla de la cadena se escribe en una línea:
+      \[\frac{dz}{dt}=\nabla f\big(\vec r(t)\big)\cdot\vec r\,'(t).\]
+      El gradiente dice cuán sensible es el campo a cada variable; la velocidad, cuán rápido se mueve cada variable. El producto escalar multiplica componente a componente y suma: es la misma suma de dos aportes.</div>
+    <div class="acc adv" style="margin-bottom:12px"><div class="acc-h" tabindex="0"><span class="acc-t">Opcional: por qué el ritmo en el tiempo no es la derivada direccional</span><span class="chev">▼</span></div><div class="acc-b">\(\dfrac{dz}{dt}=\nabla f\big(\vec r(t)\big)\cdot\vec r\,'(t)\) es la derivada de \(f\) <em>según el vector velocidad</em>, que en general no es unitario. Si el proceso recorre la misma trayectoria al doble de velocidad, \(\dfrac{dz}{dt}\) se duplica: el ritmo en el tiempo depende de hacia dónde <em>y</em> de cuán rápido; la derivada direccional de la Unidad 3, solo de hacia dónde.</div></div>
     <div id="ej-cadena-ejemplos"></div>
   </div>
 
@@ -865,15 +873,15 @@ function interpretarPlano(m, a, b, dx, dy){
    TRAYECTORIAS · x(t), y(t) con sus derivadas
    ================================================================ */
 const TRAY = {
-  rampa:{ id:'rampa', modelo:'rend', nombre:'Rampa del proceso: T = 40 + 2t, C = 2 − 0,04t', t0:0, t1:15, tu:'min', x:t=>40+2*t, y:t=>2-0.04*t, dx:()=>2, dy:()=>-0.04, latex:'\\vec r(t)=(40+2t\\,;\\ 2-0{,}04\\,t)', latexD:'\\vec r\\,\'(t)=(2\\,;\\ -0{,}04)', tDef:5 },
-  nivelR:{ id:'nivelR', modelo:'rend', nombre:'Sobre una curva de nivel del rendimiento', t0:0, t1:2*Math.PI, tu:'min', x:t=>60+Math.sqrt(300)*0.8*Math.cos(t), y:t=>1.5+0.8*Math.sin(t), dx:t=>-Math.sqrt(300)*0.8*Math.sin(t), dy:t=>0.8*Math.cos(t), latex:'\\vec r(t)=(60+13{,}86\\cos t\\,;\\ 1{,}5+0{,}8\\,\\sen t)', latexD:'\\vec r\\,\'(t)=(-13{,}86\\,\\sen t\\,;\\ 0{,}8\\cos t)', tDef:1 },
-  calent:{ id:'calent', modelo:'vel', nombre:'Calentar mientras se consume reactivo: T = 30 + 3t, C = 1,5 − 0,1t', t0:0, t1:10, tu:'min', x:t=>30+3*t, y:t=>1.5-0.1*t, dx:()=>3, dy:()=>-0.1, latex:'\\vec r(t)=(30+3t\\,;\\ 1{,}5-0{,}1\\,t)', latexD:'\\vec r\\,\'(t)=(3\\,;\\ -0{,}1)', tDef:3 },
-  gasT:{ id:'gasT', modelo:'gas', nombre:'Calentar y comprimir: T = 300 + 2t, V = 20 − 0,5t', t0:0, t1:10, tu:'min', x:t=>300+2*t, y:t=>20-0.5*t, dx:()=>2, dy:()=>-0.5, latex:'\\vec r(t)=(300+2t\\,;\\ 20-0{,}5\\,t)', latexD:'\\vec r\\,\'(t)=(2\\,;\\ -0{,}5)', tDef:0 },
-  enerT:{ id:'enerT', modelo:'ener', nombre:'Calentar y despresurizar: T = 300 + 2t, P = 200 − 5t', t0:0, t1:10, tu:'min', x:t=>300+2*t, y:t=>200-5*t, dx:()=>2, dy:()=>-5, latex:'\\vec r(t)=(300+2t\\,;\\ 200-5\\,t)', latexD:'\\vec r\\,\'(t)=(2\\,;\\ -5)', tDef:0 },
-  circS:{ id:'circS', modelo:'silla', nombre:'Silla sobre la circunferencia unitaria', t0:0, t1:2*Math.PI, tu:'', x:t=>Math.cos(t), y:t=>Math.sin(t), dx:t=>-Math.sin(t), dy:t=>Math.cos(t), latex:'\\vec r(t)=(\\cos t\\,;\\ \\sen t)', latexD:'\\vec r\\,\'(t)=(-\\sen t\\,;\\ \\cos t)', tDef:0.8 },
-  circP:{ id:'circP', modelo:'parab', nombre:'Paraboloide sobre la circunferencia unitaria', t0:0, t1:2*Math.PI, tu:'', x:t=>Math.cos(t), y:t=>Math.sin(t), dx:t=>-Math.sin(t), dy:t=>Math.cos(t), latex:'\\vec r(t)=(\\cos t\\,;\\ \\sen t)', latexD:'\\vec r\\,\'(t)=(-\\sen t\\,;\\ \\cos t)', tDef:0.8 },
-  rectaP:{ id:'rectaP', modelo:'parab', nombre:'Paraboloide sobre la recta y = 1', t0:0, t1:4, tu:'', x:t=>-2+t, y:()=>1, dx:()=>1, dy:()=>0, latex:'\\vec r(t)=(-2+t\\,;\\ 1)', latexD:'\\vec r\\,\'(t)=(1\\,;\\ 0)', tDef:1 },
-  rectaX:{ id:'rectaX', modelo:'x2y', nombre:'x²·y sobre x = t², y = 1 + t', t0:-1, t1:1.4, tu:'', x:t=>t*t, y:t=>1+t, dx:t=>2*t, dy:()=>1, latex:'\\vec r(t)=(t^2\\,;\\ 1+t)', latexD:'\\vec r\\,\'(t)=(2t\\,;\\ 1)', tDef:1 }
+  rampa:{ id:'rampa', modelo:'rend', nombre:'Rampa del proceso: T = 40 + 2t, C = 2 − 0,04t', t0:0, t1:15, tu:'min', x:t=>40+2*t, y:t=>2-0.04*t, dx:()=>2, dy:()=>-0.04, latex:'\\vec r(t)=(40+2t\\,;\\ 2-0{,}04\\,t)', latexD:'\\vec r\\,\'(t)=(2\\,;\\ -0{,}04)', latexX:'T(t)=40+2t', latexY:'C(t)=2-0{,}04\\,t', latexDX:'T\'(t)=2', latexDY:'C\'(t)=-0{,}04', tDef:5 },
+  nivelR:{ id:'nivelR', modelo:'rend', nombre:'Sobre una curva de nivel del rendimiento', t0:0, t1:2*Math.PI, tu:'min', x:t=>60+Math.sqrt(300)*0.8*Math.cos(t), y:t=>1.5+0.8*Math.sin(t), dx:t=>-Math.sqrt(300)*0.8*Math.sin(t), dy:t=>0.8*Math.cos(t), latex:'\\vec r(t)=(60+13{,}86\\cos t\\,;\\ 1{,}5+0{,}8\\,\\sen t)', latexD:'\\vec r\\,\'(t)=(-13{,}86\\,\\sen t\\,;\\ 0{,}8\\cos t)', latexX:'T(t)=60+13{,}86\\cos t', latexY:'C(t)=1{,}5+0{,}8\\,\\sen t', latexDX:'T\'(t)=-13{,}86\\,\\sen t', latexDY:'C\'(t)=0{,}8\\cos t', tDef:1 },
+  calent:{ id:'calent', modelo:'vel', nombre:'Calentar mientras se consume reactivo: T = 30 + 3t, C = 1,5 − 0,1t', t0:0, t1:10, tu:'min', x:t=>30+3*t, y:t=>1.5-0.1*t, dx:()=>3, dy:()=>-0.1, latex:'\\vec r(t)=(30+3t\\,;\\ 1{,}5-0{,}1\\,t)', latexD:'\\vec r\\,\'(t)=(3\\,;\\ -0{,}1)', latexX:'T(t)=30+3t', latexY:'C(t)=1{,}5-0{,}1\\,t', latexDX:'T\'(t)=3', latexDY:'C\'(t)=-0{,}1', tDef:3 },
+  gasT:{ id:'gasT', modelo:'gas', nombre:'Calentar y comprimir: T = 300 + 2t, V = 20 − 0,5t', t0:0, t1:10, tu:'min', x:t=>300+2*t, y:t=>20-0.5*t, dx:()=>2, dy:()=>-0.5, latex:'\\vec r(t)=(300+2t\\,;\\ 20-0{,}5\\,t)', latexD:'\\vec r\\,\'(t)=(2\\,;\\ -0{,}5)', latexX:'T(t)=300+2t', latexY:'V(t)=20-0{,}5\\,t', latexDX:'T\'(t)=2', latexDY:'V\'(t)=-0{,}5', tDef:0 },
+  enerT:{ id:'enerT', modelo:'ener', nombre:'Calentar y despresurizar: T = 300 + 2t, P = 200 − 5t', t0:0, t1:10, tu:'min', x:t=>300+2*t, y:t=>200-5*t, dx:()=>2, dy:()=>-5, latex:'\\vec r(t)=(300+2t\\,;\\ 200-5\\,t)', latexD:'\\vec r\\,\'(t)=(2\\,;\\ -5)', latexX:'T(t)=300+2t', latexY:'P(t)=200-5\\,t', latexDX:'T\'(t)=2', latexDY:'P\'(t)=-5', tDef:0 },
+  circS:{ id:'circS', modelo:'silla', nombre:'Silla sobre la circunferencia unitaria', t0:0, t1:2*Math.PI, tu:'', x:t=>Math.cos(t), y:t=>Math.sin(t), dx:t=>-Math.sin(t), dy:t=>Math.cos(t), latex:'\\vec r(t)=(\\cos t\\,;\\ \\sen t)', latexD:'\\vec r\\,\'(t)=(-\\sen t\\,;\\ \\cos t)', latexX:'x(t)=\\cos t', latexY:'y(t)=\\sen t', latexDX:'x\'(t)=-\\sen t', latexDY:'y\'(t)=\\cos t', tDef:0.8 },
+  circP:{ id:'circP', modelo:'parab', nombre:'Paraboloide sobre la circunferencia unitaria', t0:0, t1:2*Math.PI, tu:'', x:t=>Math.cos(t), y:t=>Math.sin(t), dx:t=>-Math.sin(t), dy:t=>Math.cos(t), latex:'\\vec r(t)=(\\cos t\\,;\\ \\sen t)', latexD:'\\vec r\\,\'(t)=(-\\sen t\\,;\\ \\cos t)', latexX:'x(t)=\\cos t', latexY:'y(t)=\\sen t', latexDX:'x\'(t)=-\\sen t', latexDY:'y\'(t)=\\cos t', tDef:0.8 },
+  rectaP:{ id:'rectaP', modelo:'parab', nombre:'Paraboloide sobre la recta y = 1', t0:0, t1:4, tu:'', x:t=>-2+t, y:()=>1, dx:()=>1, dy:()=>0, latex:'\\vec r(t)=(-2+t\\,;\\ 1)', latexD:'\\vec r\\,\'(t)=(1\\,;\\ 0)', latexX:'x(t)=-2+t', latexY:'y(t)=1', latexDX:'x\'(t)=1', latexDY:'y\'(t)=0', tDef:1 },
+  rectaX:{ id:'rectaX', modelo:'x2y', nombre:'x²·y sobre x = t², y = 1 + t', t0:-1, t1:1.4, tu:'', x:t=>t*t, y:t=>1+t, dx:t=>2*t, dy:()=>1, latex:'\\vec r(t)=(t^2\\,;\\ 1+t)', latexD:'\\vec r\\,\'(t)=(2t\\,;\\ 1)', latexX:'x(t)=t^2', latexY:'y(t)=1+t', latexDX:'x\'(t)=2t', latexDY:'y\'(t)=1', tDef:1 }
 };
 function calcCadena(m, tr, t){
   const x = tr.x(t), y = tr.y(t), dx = tr.dx(t), dy = tr.dy(t);
@@ -887,7 +895,7 @@ function interpretarCadena(m, tr, t){
   const nomz = m.tipo==='mat' ? 'la función' : 'el ' + m.vz.nombre;
   const mov = (d, s, u) => Math.abs(d)<1e-12 ? `<em>${s}</em> no cambia` : `<em>${s}</em> ${d>0?'sube':'baja'} ${fmt(Math.abs(d))}${u} por ${tr.tu||'unidad de t'}`;
   const ap = (a, s) => `su ${Math.abs(a)<1e-12?'movimiento no aporta nada':`aporte es ${a>=0?'+':'−'}${fmt(Math.abs(a))}${uz} por ${tr.tu||'unidad de t'}`}`;
-  const gana = Math.abs(c.ax)>1e-12 && Math.abs(c.ay)>1e-12 && signo(c.ax)!==signo(c.ay) ? ` Los dos aportes tienen signos opuestos y gana el de mayor valor absoluto: el de <em>${Math.abs(c.ax)>Math.abs(c.ay)?sx:sy}</em>.` : '';
+  const gana = Math.abs(c.ax)>1e-12 && Math.abs(c.ay)>1e-12 && signo(c.ax)!==signo(c.ay) ? (Math.abs(Math.abs(c.ax)-Math.abs(c.ay))<1e-9 ? ' Los dos aportes tienen signos opuestos y el mismo tamaño: se cancelan exactamente.' : ` Los dos aportes tienen signos opuestos y gana el de mayor valor absoluto: el de <em>${Math.abs(c.ax)>Math.abs(c.ay)?sx:sy}</em>.`) : '';
   const total = Math.abs(c.dz)<1e-9 ? `En total ${nomz} <strong>no cambia en este instante</strong>: en este instante la velocidad es perpendicular al gradiente, tangente a la curva de nivel que pasa por el punto.` : `En total ${nomz} ${c.dz>0?'<strong>crece</strong>':'<strong>decrece</strong>'} a ${fmt(Math.abs(c.dz))}${uz} por ${tr.tu||'unidad de t'}.`;
   return `En ${tr.tu?'el minuto':'t ='} ${fmt(t)} el punto está en (${fmt(c.x)}${ux} ; ${fmt(c.y)}${uy}). ${mov(c.dx,sx,ux)} y, como la sensibilidad a <em>${sx}</em> es ${fmt(c.fx)}, ${ap(c.ax,sx)}. ${mov(c.dy,sy,uy)} y, como la sensibilidad a <em>${sy}</em> es ${fmt(c.fy)}, ${ap(c.ay,sy)}.${gana} ${total}`;
 }
@@ -1148,12 +1156,17 @@ function dibujar3DCaminata(div, m, tr, t, st){
 }
 /* ================= Árboles de dependencia (SVG con tspans) ================= */
 function arbolSVG(tipo, L){ L = L || {z:'z',x:'x',y:'y',t:'t'};
-  const nodo = (x,y,t,sub) => `<circle cx="${x}" cy="${y}" r="17" fill="#fff" stroke="#1d6fcc" stroke-width="1.6"/><text x="${x}" y="${y+5}" text-anchor="middle" font-family="STIX Two Text, Times New Roman, serif" font-size="16" font-style="italic" fill="#0f2244">${t}${sub?`<tspan dy="4" font-size="10">${sub}</tspan>`:''}</text>`;
-  const lin_ = (x1,y1,x2,y2,rot) => `<line x1="${x1}" y1="${y1+17}" x2="${x2}" y2="${y2-17}" stroke="#94a3b8" stroke-width="1.5"/>${rot?`<text x="${(x1+x2)/2+(x2>x1?9:-9)}" y="${(y1+y2)/2+4}" text-anchor="middle" font-family="STIX Two Text, serif" font-size="12" fill="#475569">${rot}</text>`:''}`;
-  const sb = (b,s) => `<tspan font-style="italic">${b}</tspan><tspan dy="3" font-size="9" font-style="italic">${s}</tspan>`;
-  const pr = b => `<tspan font-style="italic">${b}</tspan>&#8242;`;
-  if(tipo===1) return `<svg viewBox="0 0 300 170" role="img" aria-label="árbol de dependencias"><text x="150" y="14" text-anchor="middle" font-family="Outfit, sans-serif" font-size="11" fill="#64748b">un camino por variable: dos aportes</text>${lin_(150,45,90,95,sb(L.z,L.x))}${lin_(150,45,210,95,sb(L.z,L.y))}${lin_(90,95,150,150,pr(L.x))}${lin_(210,95,150,150,pr(L.y))}${nodo(150,45,L.z)}${nodo(90,95,L.x)}${nodo(210,95,L.y)}${nodo(150,150,L.t)}</svg>`;
-  return `<svg viewBox="0 0 340 170" role="img" aria-label="árbol: z depende de x e y, que dependen de u y v"><text x="170" y="14" text-anchor="middle" font-family="Outfit, sans-serif" font-size="11" fill="#64748b">una derivada por hoja, sumando los caminos que llegan a ella</text>${lin_(170,45,100,95,sb('f','x'))}${lin_(170,45,240,95,sb('f','y'))}${lin_(100,95,60,150,'')}${lin_(100,95,150,150,'')}${lin_(240,95,190,150,'')}${lin_(240,95,280,150,'')}${nodo(170,45,'z')}${nodo(100,95,'x')}${nodo(240,95,'y')}${nodo(60,150,'u')}${nodo(150,150,'v')}${nodo(190,150,'u')}${nodo(280,150,'v')}</svg>`;
+  const FF = 'STIX Two Text, Times New Roman, serif';
+  const nodo = (x,y,t) => `<circle cx="${x}" cy="${y}" r="17" fill="#fff" stroke="#1d6fcc" stroke-width="1.6"/><text x="${x}" y="${y+5}" text-anchor="middle" font-family="${FF}" font-size="16" font-style="italic" fill="#0f2244">${t}</text>`;
+  const lin_ = (x1,y1,x2,y2) => `<line x1="${x1}" y1="${y1+17}" x2="${x2}" y2="${y2-17}" stroke="#94a3b8" stroke-width="1.5"/>`;
+  // Fracción apilada en SVG: numerador, filete y denominador, centrada en (x,y). Rótulo de una rama.
+  const frac = (x,y,op0,num,den) => { const op = /[a-z]/i.test(op0) ? `<tspan font-style="italic">${op0}</tspan>` : op0; return `<text x="${x}" y="${y-3}" text-anchor="middle" font-family="${FF}" font-size="11.5" fill="#475569">${op}<tspan font-style="italic">${num}</tspan></text><line x1="${x-11}" y1="${y}" x2="${x+11}" y2="${y}" stroke="#475569" stroke-width="0.9"/><text x="${x}" y="${y+11}" text-anchor="middle" font-family="${FF}" font-size="11.5" fill="#475569">${op}<tspan font-style="italic">${den}</tspan></text>`; };
+  if(tipo===1){
+    // Nodos: z arriba, x e y en el medio, t abajo. Cada rama lleva la derivada que la representa, afuera de la rama.
+    const Z=[150,40], X=[80,110], Y=[220,110], T=[150,180];
+    return `<svg viewBox="0 0 300 205" role="img" aria-label="árbol de dependencias"><text x="150" y="13" text-anchor="middle" font-family="Outfit, sans-serif" font-size="11" fill="#64748b">un camino por variable: dos aportes</text>${lin_(...Z,...X)}${lin_(...Z,...Y)}${lin_(...X,...T)}${lin_(...Y,...T)}${frac(104,60,'∂',L.z,L.x)}${frac(196,60,'∂',L.z,L.y)}${frac(104,160,'d',L.x,L.t)}${frac(196,160,'d',L.y,L.t)}${nodo(...Z,L.z)}${nodo(...X,L.x)}${nodo(...Y,L.y)}${nodo(...T,L.t)}</svg>`;
+  }
+  return `<svg viewBox="0 0 340 170" role="img" aria-label="árbol: z depende de x e y, que dependen de u y v"><text x="170" y="14" text-anchor="middle" font-family="Outfit, sans-serif" font-size="11" fill="#64748b">una derivada por hoja, sumando los caminos que llegan a ella</text>${lin_(170,45,100,95)}${lin_(170,45,240,95)}${lin_(100,95,60,150)}${lin_(100,95,150,150)}${lin_(240,95,190,150)}${lin_(240,95,280,150)}${frac(126,62,'∂','f','x')}${frac(214,62,'∂','f','y')}${nodo(170,45,'z')}${nodo(100,95,'x')}${nodo(240,95,'y')}${nodo(60,150,'u')}${nodo(150,150,'v')}${nodo(190,150,'u')}${nodo(280,150,'v')}</svg>`;
 }
 
 /* ===== 30_exploradores.js ===== */
@@ -1311,7 +1324,7 @@ function crearCaminata(cfg){
     const paso = now => { const dt=(now-last)/1000; last=now; ex.t += (ex.tr.t1-ex.tr.t0)*dt/8; if(ex.t>=ex.tr.t1){ ex.t=ex.tr.t1; ex.refrescar(); ex._anim=null; $(`${id}-play`).textContent='▶ Reproducir'; return; } ex.refrescar(); ex._anim=requestAnimationFrame(paso); }; ex._anim=requestAnimationFrame(paso); };
   ex.vista = function(v){ ex.st.uirev++; ex.st.camara = v==='sup' ? {eye:{x:0,y:0,z:2.6}, up:{x:0,y:1,z:0}} : {eye:{x:1.45,y:-1.45,z:0.95}, up:{x:0,y:0,z:1}}; ex.dibujar3d(); };
   ex.pintarEtiquetas = function(){ const s=$(`${id}-st`); if(!s) return; s.min=ex.tr.t0; s.max=ex.tr.t1; s.step=(ex.tr.t1-ex.tr.t0)/300; };
-  ex.pintarPanelM = function(){ const d=$(`${id}-panelM`); if(!d) return; const m=ex.m, tr=ex.tr; d.innerHTML = panelModeloHTML(m) + `<div style="margin-top:6px"><span class="bt">Trayectoria</span>\\(${tr.latex}\\), &ensp;\\(${tr.latexD}\\)${tr.tu?`, <span class="nota">t en ${tr.tu}</span>`:''}</div>`; renderMath(d); };
+  ex.pintarPanelM = function(){ const d=$(`${id}-panelM`); if(!d) return; const m=ex.m, tr=ex.tr; d.innerHTML = panelModeloHTML(m) + `<div style="margin-top:6px"><span class="bt">Cómo cambian las variables</span>\\(${tr.latexX}\\), &ensp;\\(${tr.latexY}\\)${tr.tu?` <span class="nota">(t en ${tr.tu})</span>`:''}${m.tipo==='mat'?`<br><span class="nota">como vector trayectoria: \\(${tr.latex}\\)</span>`:''}</div>`; renderMath(d); };
   ex.refrescar = function(){
     const c = ex.calc(); const s=$(`${id}-st`); if(s){ s.value=ex.t; $(`${id}-vt`).textContent = fmt(ex.t)+(ex.tr.tu?' '+ex.tr.tu:''); }
     ex.pintarLect(c); ex.dibujar3d(); ex.dibujar2d();
@@ -1531,16 +1544,31 @@ function pasosSegundas(m, a, b, titulo, abierto){
     ['Interpretar', `${c.fxx<0?`El corte a \\(${Y}\\) fija es cóncavo hacia abajo`:c.fxx>0?`El corte a \\(${Y}\\) fija es cóncavo hacia arriba`:`El corte a \\(${Y}\\) fija es una recta`}; ${c.fyy<0?`el corte a \\(${X}\\) fija es cóncavo hacia abajo`:c.fyy>0?`el corte a \\(${X}\\) fija es cóncavo hacia arriba`:`el corte a \\(${X}\\) fija es una recta`}. ${Math.abs(c.fxy)<1e-12?'Sin interacción: mover una variable no cambia la sensibilidad a la otra.':`Interacción ${c.fxy>0?'positiva':'negativa'}: al aumentar \\(${Y}\\) la sensibilidad a \\(${X}\\) ${c.fxy>0?'crece':'disminuye'}, y viceversa.`}`]
   ], hessHTML(m, c, false), abierto);
 }
-function pasosCadena(tr, t, titulo, abierto){
-  const m = MODELOS[tr.modelo]; const c = calcCadena(m, tr, t); const X=m.vx.sym, Y=m.vy.sym; const uz = m.vz.ut?' '+m.vz.ut:''; const tu = tr.tu||'unidad de t';
+function pasosCadena(tr, t, titulo, abierto, modo){
+  // modo: undefined → por componentes; 'puente' → componentes + el vector como abreviatura; 'vector' → el mismo cálculo en forma vectorial
+  const m = MODELOS[tr.modelo]; const c = calcCadena(m, tr, t); const X=m.vx.sym, Y=m.vy.sym, Z=m.fn; const uz = m.vz.ut?' '+m.vz.ut:''; const tu = tr.tu||'unidad de t';
+  const ux = m.vx.ut?' '+m.vx.ut:'', uy = m.vy.ut?' '+m.vy.ut:'';
+  const par = (a,b) => `(${fmtT(a)}\\,;\\ ${fmtT(b)})`;
+  const resultado = `\\(\\dfrac{d${Z}}{dt}=${fmtT(c.dz)}\\)${uz} por ${tu}.`;
+  if(modo === 'vector'){
+    return pasos(titulo, [
+      ['El campo y la trayectoria (el árbol)', `El campo es \\(${m.latex}\\). Sus dos variables dependen de \\(t\\): \\(${tr.latexX}\\), \\(${tr.latexY}\\). Juntas son la trayectoria del proceso en el plano \\(${X}\\)–\\(${Y}\\): \\[${tr.latex}\\] Dos caminos de \\(${Z}\\) a \\(t\\), uno por \\(${X}\\) y otro por \\(${Y}\\): dos aportes, que esta vez vamos a escribir como un producto escalar.`],
+      ['El gradiente del campo', `Las dos derivadas parciales, juntas, son el gradiente de la Unidad 3: \\[\\nabla ${Z}=\\left(\\frac{\\partial ${Z}}{\\partial ${X}}\\,;\\ \\frac{\\partial ${Z}}{\\partial ${Y}}\\right),\\qquad ${m.latexFx},\\qquad ${m.latexFy}.\\] Dice cuán <strong>sensible</strong> es \\(${Z}\\) a cada variable.`],
+      ['La velocidad de la trayectoria', `Derivamos las funciones intermedias y las juntamos en el vector velocidad: \\[${tr.latexD}\\] Es decir, ${fmt(c.dx)}${ux} por ${tu} y ${fmt(c.dy)}${uy} por ${tu}. Dice cuán <strong>rápido</strong> cambia cada variable. ${m.id==='vel' ? `Ojo con el nombre: no es la velocidad de reacción \\(v\\); es la velocidad con que se mueve el punto \\((${X}\\,;\\,${Y})\\) en el plano.` : `Es la velocidad con que se mueve el punto \\((${X}\\,;\\,${Y})\\) en el plano, no un valor del campo.`}`],
+      ['Evaluar el gradiente en el punto de la trayectoria', `En \\(t=${fmtT(t)}\\) el proceso está en \\(\\vec r(${fmtT(t)})=${par(c.x,c.y)}\\), así que \\[\\nabla ${Z}\\big(\\vec r(${fmtT(t)})\\big)=${par(c.fx,c.fy)}.\\] No se deja "en general": se reemplaza el punto de la trayectoria.`],
+      ['Producto escalar: sensibilidad por velocidad, sumado', `\\[\\frac{d${Z}}{dt}=\\nabla ${Z}\\big(\\vec r(${fmtT(t)})\\big)\\cdot\\vec r\\,'(${fmtT(t)})=${par(c.fx,c.fy)}\\cdot${par(c.dx,c.dy)}\\] \\[=(${fmtT(c.fx)})\\cdot(${fmtT(c.dx)})+(${fmtT(c.fy)})\\cdot(${fmtT(c.dy)})=${fmtT(c.ax)}+(${fmtT(c.ay)})=${fmtT(c.dz)}\\] El producto escalar es la misma suma de dos aportes de los ejemplos 1 y 2, escrita en una línea: primera componente por primera componente, más segunda por segunda.`],
+      ['Interpretar', interpretarCadena(m, tr, t)]
+    ], resultado, abierto);
+  }
+  const puente = modo === 'puente' ? ` Las dos funciones juntas forman la trayectoria \\(${tr.latex}\\), y sus derivadas, el vector velocidad \\(${tr.latexD}\\). Acá la trayectoria sí es una posición en el plano, y la velocidad es tangente a la circunferencia.` : '';
   return pasos(titulo, [
-    ['El campo y la trayectoria (el árbol)', `\\(${m.latex}\\) con \\(${tr.latex}\\). Dos caminos de \\(${m.fn}\\) a \\(t\\): uno por \\(${X}\\), otro por \\(${Y}\\). Dos términos.`],
+    ['El campo y las funciones intermedias (el árbol)', `El campo es \\(${m.latex}\\). Sus dos variables dependen de \\(t\\): \\(${tr.latexX}\\), \\(${tr.latexY}\\).${puente} Dos caminos de \\(${Z}\\) a \\(t\\): uno por \\(${X}\\), otro por \\(${Y}\\). Dos aportes.`],
     ['Derivadas parciales del campo', `\\(${m.latexFx}\\), \\(${m.latexFy}\\).`],
-    ['Derivadas de la trayectoria', `\\(${tr.latexD}\\): en \\(t=${fmtT(t)}\\), \\(${X}'=${fmtT(c.dx)}\\), \\(${Y}'=${fmtT(c.dy)}\\).`],
-    ['Evaluar las parciales en el punto de la trayectoria', `En \\(t=${fmtT(t)}\\) el punto es \\((${fmtT(c.x)}\\,;\\,${fmtT(c.y)})\\), así que \\(${m.symFx}=${fmtT(c.fx)}\\) y \\(${m.symFy}=${fmtT(c.fy)}\\). No se deja "en general": se reemplaza.`],
-    ['Multiplicar y sumar los aportes', `\\[\\frac{d${m.fn}}{dt}=(${fmtT(c.fx)})\\cdot(${fmtT(c.dx)})+(${fmtT(c.fy)})\\cdot(${fmtT(c.dy)})=${fmtT(c.ax)}+(${fmtT(c.ay)})=${fmtT(c.dz)}\\]`],
+    ['Derivadas de las funciones intermedias', `\\(${tr.latexDX}\\), \\(${tr.latexDY}\\): en \\(t=${fmtT(t)}\\), \\(${X}'=${fmtT(c.dx)}\\), \\(${Y}'=${fmtT(c.dy)}\\).`],
+    ['Evaluar las parciales en el punto de la trayectoria', `En \\(t=${fmtT(t)}\\) el punto es \\(${par(c.x,c.y)}\\), así que \\(${m.symFx}=${fmtT(c.fx)}\\) y \\(${m.symFy}=${fmtT(c.fy)}\\). No se deja "en general": se reemplaza.`],
+    ['Multiplicar y sumar los aportes', `\\[\\frac{d${Z}}{dt}=(${fmtT(c.fx)})\\cdot(${fmtT(c.dx)})+(${fmtT(c.fy)})\\cdot(${fmtT(c.dy)})=${fmtT(c.ax)}+(${fmtT(c.ay)})=${fmtT(c.dz)}\\]`],
     ['Interpretar', interpretarCadena(m, tr, t)]
-  ], `\\(\\dfrac{d${m.fn}}{dt}=${fmtT(c.dz)}\\)${uz} por ${tu}.`, abierto);
+  ], resultado, abierto);
 }
 
 /* ---------- Ejercicios: se definen acá para contar el total ---------- */
@@ -1625,7 +1653,7 @@ INIT.cadena = () => {
   const yaPredijo = E.predicciones['pred-cadena'] !== undefined;
   const ex = crearCaminata({ id:'ex-cadena', tray:'rampa', t:5, trayectorias:['rampa','calent','enerT','gasT','nivelR','circS','circP','rectaP','rectaX'], interp:true, ocultar:!yaPredijo });
   crearPrediccionCadena({ id:'pred-cadena', tray:'rampa', t:5, texto:'La rampa del proceso: en el minuto 5 el reactor está en (50 °C ; 1,8 mol·L⁻¹). La temperatura sube y la concentración baja. Mirá el mapa de nivel (la trayectoria violeta, el color hacia donde va el punto): en ese instante, ¿el rendimiento sube, baja o no cambia? Los números del explorador aparecen después de tu respuesta.', alRegistrar:()=>ex.revelar() });
-  $('ej-cadena-ejemplos').innerHTML = pasosCadena(TRAY.rampa, 5, 'Ejemplo 1 · Rendimiento sobre la rampa del proceso, en el minuto 5') + pasosCadena(TRAY.circP, Math.PI/4, 'Ejemplo 2 · Paraboloide \\(z=x^2+y^2\\) sobre la circunferencia unitaria, en \\(t=\\dfrac{\\pi}{4}\\)') + pasosCadena(TRAY.calent, 3, 'Ejemplo 3 · Velocidad de reacción: calentar 3 °C por minuto mientras el reactivo se consume a 0,1 mol·L⁻¹ por minuto, en el minuto 3');
+  $('ej-cadena-ejemplos').innerHTML = pasosCadena(TRAY.rampa, 5, 'Ejemplo 1 · Rendimiento sobre la rampa del proceso, en el minuto 5') + pasosCadena(TRAY.circP, Math.PI/4, 'Ejemplo 2 · Paraboloide \\(z=x^2+y^2\\) sobre la circunferencia unitaria, en \\(t=\\dfrac{\\pi}{4}\\)', false, 'puente') + pasosCadena(TRAY.calent, 3, 'Ejemplo 3 · Velocidad de reacción: calentar 3 °C por minuto mientras el reactivo se consume a 0,1 mol·L⁻¹ por minuto, en el minuto 3', false, 'vector');
   $('ej-cadena').innerHTML = EJ_CADENA.map(ejercicioHTML).join('');
   renderMath($('sec-cadena'));
 };
